@@ -1,19 +1,24 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
 import CachedImage from "react-native-expo-cached-image";
 
 const ListingCard = ({ item, onPress, onEdit, onDelete }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
-      <CachedImage source={{ uri: item.imageUrl }} style={styles.image} />
+      <View style={styles.imageContainer}>
+        <CachedImage source={{ uri: item.imageUrl }} style={styles.image} />
+      </View>
       <View style={styles.info}>
-        <Text style={styles.title} numberOfLines={2}>
-          {item.description}
-        </Text>
-        <Text style={styles.details}>
-          Area: {item.areaSize} | Rooms: {item.rooms}
-        </Text>
-        <Text style={styles.details}>Price: ${item.price}/month</Text>
+        <View>
+          <Text style={styles.title} numberOfLines={2}>
+            {item.description}
+          </Text>
+          <Text style={styles.details}>
+            Area: {item.areaSize} | Rooms: {item.rooms}
+          </Text>
+          <Text style={styles.details}>Price: ${item.price}/month</Text>
+        </View>
+        
         {(onEdit || onDelete) && (
           <View style={styles.actions}>
             {onEdit && (
@@ -39,64 +44,61 @@ const ListingCard = ({ item, onPress, onEdit, onDelete }) => {
   );
 };
 
+const { width } = Dimensions.get("window");
+const isSmallScreen = width < 360;
+
 const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
-    marginBottom: 12,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 6,
-    overflow: "hidden",
-  },
-  image: { width: 100, height: 100 },
-  info: { flex: 1, padding: 8, justifyContent: "center" },
-  title: { fontSize: 16, fontWeight: "500" },
-  details: { fontSize: 14, color: "#555" },card: {
-    flexDirection: "row",
     marginBottom: 16,
     backgroundColor: "#ffffff",
-    borderRadius: 12, // Rounded corners for a modern look
+    borderRadius: 12,
     overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
-    height: 160, // Slightly taller card for better spacing
+    minHeight: 120,
+  },
+  imageContainer: {
+    width: isSmallScreen ? 100 : 130,
   },
   image: { 
-    width: 130, // Slightly larger image
-    height: "100%", 
-    borderTopLeftRadius: 12, // Match card's rounded corners
-    borderBottomLeftRadius: 12, 
+    flex: 1,
+    width: "100%",
+    height: "100%",
   },
   info: { 
     flex: 1, 
-    padding: 16, 
+    padding: 12,
     justifyContent: "space-between", 
-    backgroundColor: "#f9f9f9", // Subtle background for text area
+    backgroundColor: "#f9f9f9",
   },
   title: { 
-    fontSize: 20, 
+    fontSize: isSmallScreen ? 16 : 18, 
     fontWeight: "700", 
-    color: "#34495e", // Darker text for better readability
-    marginBottom: 6, 
-  },
-  description: { 
-    fontSize: 14, 
-    color: "#7f8c8d", 
-    marginBottom: 8, 
+    color: "#34495e",
+    marginBottom: 4, 
   },
   details: { 
     fontSize: 14, 
     color: "#2c3e50", 
     marginBottom: 4, 
   },
-  actions: { flexDirection: "row", marginTop: 8 },
+  actions: {
+    flexDirection: isSmallScreen ? "column" : "row", 
+    marginTop: 8,
+    alignItems: "flex-start"
+  },
   button: {
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 4,
-    marginRight: 8,
+    marginRight: isSmallScreen ? 0 : 8,
+    marginBottom: isSmallScreen ? 4 : 0,
+    minWidth: 70,
+    alignItems: "center"
   },
   editButton: { backgroundColor: "#4CAF50" },
   deleteButton: { backgroundColor: "#F44336" },
