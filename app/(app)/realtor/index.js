@@ -22,8 +22,11 @@ import {useListing} from "../../../hooks/useListing";
 export default function RealtorHomeScreen() {
   const { user } = useAuth();
   const router = useRouter();
-  const listingData = useListing(user?.uid);
-  const myListings = listingData.listings;
+  const { listings: myListings, loading } = useListing({
+    filterField: "ownerId",
+    filterValue: user?.uid,
+    orderByField: "createdAt"
+  });
 
   const handleDelete = async (listingId, imageUrl) => {
     try {
